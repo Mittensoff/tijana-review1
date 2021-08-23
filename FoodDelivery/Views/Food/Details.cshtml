@@ -1,0 +1,54 @@
+﻿@model FoodDelivery.DBModel.Food
+
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+
+<div>
+    <h4>Food</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price) €
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Picture)
+        </dt>
+
+        <dd>
+            <img src="@Url.Content(Model.Picture)" width="250" height="250" />
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+    </dl>
+</div>
+<p>
+    <button type="button" id="order_now">Order now</button>
+</p>
+<p>
+    <input type="hidden" id="order_food" value="@Model.FoodID">
+</p>
+<p>
+    @Html.ActionLink("Back to List", "List", "Food")
+</p>
