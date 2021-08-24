@@ -98,24 +98,31 @@ namespace FoodDelivery.Controllers
             //        userName = usr.UserName;
             //    }
             //}
+            UpdateRestaurants();
             if (_dbEntities.Users.Where(x => x.Username == username).FirstOrDefault() == null)
             {
                 ModelState.AddModelError("Error", "You have to be logged in if you want to order food.");
-                return View();
+                return View("Order", null);
             }
             Food orderedFood = _dbEntities.Foods.Where(x => x.FoodID == food_id).FirstOrDefault();
             User orderingUser = _dbEntities.Users.Where(x => x.Username == username).FirstOrDefault();
-            //List<Dictionary<double, Restaurant>> minDistanced = new List<Dictionary<double, Restaurant>>();
-            //double minDistance;
-            //List<double> minValues = new List<double>();
-            //foreach (Restaurant rest in _dbEntities.Restaurants)
-            //{
-            //    minDistance = distance((double)rest.Latitude, (double)rest.Longitude, (double)orderingUser.Latitude, (double)orderingUser.Longitude, 'M');
-            //    Dictionary<double, Restaurant> temp = new Dictionary<double, Restaurant>(){ { minDistance, rest };
-            //    minDistanced.Add(temp);
-            //    minValues.Add(minDistance);
-            //}            
-            return View();
+            List<Restaurant> availableRestaurants = _dbEntities.Restaurants.Where(x => x.IsAvailable).ToList();
+            List<RestaurantDistance> restDistList = new List<RestaurantDistance>();
+            foreach (Restaurant rest in availableRestaurants)
+            {
+                double temp1 = distance((double)rest.Latitude, (double)rest.Longitude, (double)orderingUser.Latitude, (double)orderingUser.Longitude, 'M');
+                RestaurantDistance temp = new RestaurantDistance(temp1, rest);
+                restDistList.Add(temp);
+            }
+            Restaurant minDist = restDistList.OrderBy(x => x.Distance).FirstOrDefault().Restaurant;
+            minDist.IsAvailable = false;
+            minDist.Updated = DateTime.Now;
+            _dbEntities.SaveChanges();
+            OrderModel model = new OrderModel();
+            model.FoodName = orderedFood.Name;
+            model.Username = orderingUser.Username;
+            model.RestaurantName = minDist.Name;
+            return View("Order", model);
         }
         private double distance(double lat1, double lon1, double lat2, double lon2, char unit)
         {
@@ -149,5 +156,19 @@ namespace FoodDelivery.Controllers
             return (rad / Math.PI * 180.0);
         }
         //Console.WriteLine(distance(32.9697, -96.80322, 29.46786, -98.53506, "M"));
+        public void UpdateRestaurants()
+        {
+            DateTime now = DateTime.Now;
+            List<Restaurant> listRest = _dbEntities.Restaurants.Where(x => !x.IsAvailable).ToList();
+            foreach (Restaurant rest in listRest)
+            {
+                if (now.Subtract(rest.Updated).TotalMinutes > 15)
+                {
+                    rest.Updated = DateTime.Now;
+                    rest.IsAvailable = true;
+                    _dbEntities.SaveChanges();
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  db:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "Your_password123"
+      ACCEPT_EULA: "Y"
+    command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Your_password123 -d master -Q 'CREATE DATABASE [FoodDeliveryDB]' && sleep infinity"
+    networks:
+      - network
+
+networks:
+  network:
