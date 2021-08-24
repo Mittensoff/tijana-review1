@@ -39,16 +39,16 @@ namespace FoodDelivery.Controllers
                     _dbEntities.Users.Add(newUser);
                     _dbEntities.SaveChanges();
                     user = new UserModel();
-                    user.SuccessMessage = "New user is successfully added.";
-                    return RedirectToAction("Index", "Home");
+                    user.SuccessMessage = "New user is successfully added. Now, you can log in.";
+                    return View("Register", user);
                 }
                 else
                 {
                     user.SuccessMessage = "User with " + user.Username + " username already exists.";
-                    return View("Register");
+                    return View("Register", user);
                 }
             }
-            return RedirectToAction("Index", "Home");
+            return View("Register");
         }
 
 
