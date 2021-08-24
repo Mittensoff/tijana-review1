@@ -44,11 +44,11 @@ namespace FoodDelivery.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Error", "User with " + user.Username + " username already exists.");
-                    return View("");
+                    user.SuccessMessage = "User with " + user.Username + " username already exists.";
+                    return View("Register");
                 }
             }
-            return View();
+            return RedirectToAction("Index", "Home");
         }
 
 

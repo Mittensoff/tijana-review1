@@ -7,6 +7,8 @@ using System.Web.Mvc;
 using System.Web.Security;
 using FoodDelivery.DBModel;
 using FoodDelivery.Models;
+using Microsoft.AspNet.Identity;
+using System.Security.Claims;
 
 namespace FoodDelivery.Controllers
 {
@@ -53,7 +55,7 @@ namespace FoodDelivery.Controllers
                 _dbEntities.SaveChanges();
                 ModelState.Clear();
             }
-            return View(food);
+            return View("List", _dbEntities.Foods);
         }
 
         [HttpGet]
@@ -107,6 +109,15 @@ namespace FoodDelivery.Controllers
             Food orderedFood = _dbEntities.Foods.Where(x => x.FoodID == food_id).FirstOrDefault();
             User orderingUser = _dbEntities.Users.Where(x => x.Username == username).FirstOrDefault();
             List<Restaurant> availableRestaurants = _dbEntities.Restaurants.Where(x => x.IsAvailable).ToList();
+            OrderModel model = new OrderModel();
+            if (availableRestaurants == null || availableRestaurants.Count == 0)
+            {
+                model.FoodName = orderedFood.Name;
+                model.UserName = orderingUser.Username;
+                model.RestaurantName = string.Empty;
+                return View("Order", model);
+            }
+
             List<RestaurantDistance> restDistList = new List<RestaurantDistance>();
             foreach (Restaurant rest in availableRestaurants)
             {
@@ -118,9 +129,9 @@ namespace FoodDelivery.Controllers
             minDist.IsAvailable = false;
             minDist.Updated = DateTime.Now;
             _dbEntities.SaveChanges();
-            OrderModel model = new OrderModel();
+
             model.FoodName = orderedFood.Name;
-            model.Username = orderingUser.Username;
+            model.UserName = orderingUser.Username;
             model.RestaurantName = minDist.Name;
             return View("Order", model);
         }

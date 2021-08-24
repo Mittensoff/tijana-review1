@@ -5,32 +5,48 @@
 }
 
 <h2>Order</h2>
+@if (Model == null)
+{
 
-<div>
-    <h4>Order Info</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Username)
-        </dt>
+    <h6>You have to be logged in for ordering food.</h6>
+}
+else
+{
+    if (string.IsNullOrEmpty(Model.RestaurantName))
+    {
+        {
+            <h6>All restaurants are busy at the moment. Please, try later.</h6>
+        }
+    }
+    else
+    {
+        <div>
+            <h4>Order Info</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.UserName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Username)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.FoodName)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.UserName)
+                <dt>
+                    @Html.DisplayNameFor(model => model.FoodName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.FoodName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.RestaurantName)
-        </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FoodName)
+                </dd>
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.RestaurantName)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.RestaurantName)
-        </dd>
-    </dl>
-</div>
+                <dd>
+                    @Html.DisplayFor(model => model.RestaurantName)
+                </dd>
+            </dl>
+        </div>
 
+    }
+}

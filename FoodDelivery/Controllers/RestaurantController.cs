@@ -26,21 +26,33 @@ namespace FoodDelivery.Controllers
         [HttpPost]
         public ActionResult Add(Restaurant rest)
         {
-            if (_dbEntities.Restaurants.Where(x => x.Name.ToLower().Equals(rest.Name.ToLower())).FirstOrDefault() != null)
+            if (!string.IsNullOrEmpty(rest.Name))
             {
-                ModelState.AddModelError("Error", "Food " + rest.Name + " already exists.");
-                return View(rest);
+                if (_dbEntities.Restaurants.Where(x => x.Name.ToLower().Equals(rest.Name.ToLower())).FirstOrDefault() != null)
+                {
+                    ModelState.AddModelError("Error", "Restaurant " + rest.Name + " already exists.");
+                    return View(rest);
+                }
             }
             Restaurant newRest = new Restaurant();
-            newRest.Name = rest.Name;
-            newRest.Latitude = rest.Latitude;
-            newRest.Longitude = rest.Longitude;
-            newRest.IsAvailable = true;
-            newRest.Created = DateTime.Now;
-            newRest.Updated = DateTime.Now;
-            _dbEntities.Restaurants.Add(newRest);
-            _dbEntities.SaveChanges();
-            return View("List", _dbEntities.Restaurants);
+            newRest.Name = string.IsNullOrEmpty(rest.Name) ? null : rest.Name;
+            if (rest.Latitude == 0 || rest.Longitude == 0)
+            {
+                ModelState.AddModelError("Error", "You have to insert lat/long values.");
+                return View(rest);
+            }
+
+            else
+            {
+                newRest.Latitude = rest.Latitude;
+                newRest.Longitude = rest.Longitude;
+                newRest.IsAvailable = true;
+                newRest.Created = DateTime.Now;
+                newRest.Updated = DateTime.Now;
+                _dbEntities.Restaurants.Add(newRest);
+                _dbEntities.SaveChanges();
+                return View("List", _dbEntities.Restaurants);
+            }
         }
     }
 }

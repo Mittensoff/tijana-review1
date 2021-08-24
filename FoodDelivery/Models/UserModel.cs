@@ -10,13 +10,13 @@ namespace FoodDelivery.Models
     {
         public int UserID { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
-        [Display(Name = "First name: ")]
-        public string FirstName { get; set; }
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "First name is required.")]
+        //[Display(Name = "First name: ")]
+        //public string FirstName { get; set; }
 
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required.")]
-        [Display(Name = "Last name: ")]
-        public string LastName { get; set; }
+        //[Required(AllowEmptyStrings = false, ErrorMessage = "Last name is required.")]
+        //[Display(Name = "Last name: ")]
+        //public string LastName { get; set; }
 
         [Required(AllowEmptyStrings = false, ErrorMessage = "Username is required.")]
         [Display(Name = "Username: ")]

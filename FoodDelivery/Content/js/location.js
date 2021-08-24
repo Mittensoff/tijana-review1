@@ -12,8 +12,6 @@
     }
 
     function showPosition(position) {
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
         lat.value = position.coords.latitude;
         lng.value = position.coords.longitude;
     }
