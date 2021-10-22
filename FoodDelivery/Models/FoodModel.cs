@@ -6,6 +6,8 @@ using System.Web;
 
 namespace FoodDelivery.Models
 {
+    //TODO: 
+    // Ovi modeli su u stvari DTO
     public class FoodModel
     {
         [Required(ErrorMessage = "Please enter name of your food.")]

@@ -23,6 +23,10 @@ namespace FoodDelivery.Controllers
             return View();
         }
 
+        // TODO: 
+        // Pretraga duple hrane u custom Validator za FoodModel 
+        // FoodModel - Food mapiranje i drugacija incijalizacija  
+        // Validacija fajlova je jedna od bitnijih stvari - validacija ekstenzije, velicine, tipa, imena fajla itd.   
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public ActionResult Add(FoodModel food)
@@ -58,6 +62,8 @@ namespace FoodDelivery.Controllers
             return View("List", _dbEntities.Foods);
         }
 
+        //TODO: 
+        // Dodati provjeru da li je prazan food objekat, u slucaju da jeste - vratiti BadRequest
         [HttpGet]
         public ActionResult Details(int id)
         {
@@ -65,13 +71,16 @@ namespace FoodDelivery.Controllers
             food = _dbEntities.Foods.Where(x => x.FoodID == id).FirstOrDefault();
             return View(food);
         }
-
+         
         [HttpGet]
         public ActionResult List()
         {
             List<Food> listFood = _dbEntities.Foods.ToList();
             return View(listFood);
         }
+
+        // Nema autorizacije, za ovaj endpoint je po spec. neophodna
+        // Provjera da li food postoji, else BadRequest. Nakon Remove vratiti odgovarajuci http status kod: 200 ili 204 (vjerovatno ima neka fina wrapper metoda)
         [HttpGet]
         //[Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
@@ -86,7 +95,21 @@ namespace FoodDelivery.Controllers
             return View("List", _dbEntities.Foods);
         }
 
-
+        //TODO: 
+        // 1. Food orderedFood = _dbEntities.Foods.Where(x => x.FoodID == food_id).FirstOrDefault();     
+        //    User orderingUser = _dbEntities.Users.Where(x => x.Username == username).FirstOrDefault(); 
+        //    Nije potrebno uzimati user-a, on je prisutan u memoriji servera jer je autentikovan (po pravilu). 1 manje poziv ka bazi.
+        //    Vjerovatno se moze i ovaj drugi izbjeci. 
+        // 2. UpdateRestaurants() nije bas logika dobra, jer ako se Order ne pozove,
+        //    stanje restorana je nevalidno (u slucaju da se zeli na frontendu prikazati njihovo stanje bilo bi netacno)
+        //    Bolje je ne koristiti IsAvailable, nego IsAvailable formirati kao lokalnu varijablu na osnovu OrderFinishedAt timestampa u Restaurant modelu, npr. 
+        // 3. Racunjanje distance:
+        //    - RestaurantDistance ne treba da postoji, dovoljno je kao lokalna varijabla?
+        //    - Racunanje distance se moze napraviti pomocu Point(x,y) objekata iz MSSQL servera pa racunanje min(Point1, Point2), sve u bazi - brze, elegantnije
+        // 4. Order mora sadrzati FoodId, UserId odnosno sve veze moraju biti sacuvane u bazi, za razlicite prikaze - ovako se samo moze prikazati UserName, FoodName 
+        // 5. Najbitnije od svega - ovakvu logiku bi u RestAPI trebalo izvdojiti u poseban layer, jer se ovdje vrze "biznis" odluke stoga - BusinessLogicLayer
+        //    Kontroleri bi samo sadrzali metode za validaciju i brisanje/izmjenu/fetch resursa tj. modela tj Dto-a
+        //    Za pristup bazi ili Repository pattern ili Entity Framework, ili oboje (mozda overkill)
         [HttpPost]
         //[Authorize]
         public ActionResult Order(int food_id, string username)

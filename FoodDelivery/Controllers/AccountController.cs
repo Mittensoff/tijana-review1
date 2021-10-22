@@ -16,11 +16,23 @@ namespace FoodDelivery.Controllers
         {
             return View();
         }
+        //TODO:
+        // Nepotreban endpoint, ne treba ni dozvoliti (frontend validacija) da prazan request sa register view-a dodje do backenda
         public ActionResult Register()
         {
             UserModel user = new UserModel();
             return View(user);
         }
+
+        //TODO:  
+        // 1. Izraze u If naredbama, kao ovdje _dbEntities ..., treba u varijalbu pa u If, u slucaju kompleksnijeg If-a, nepregledno
+        // 2. !_dbEntities.Users.Any(m => m.Username == user.Username treba ubaciti u custom Validator
+        // 3. User user = new UserModel(...);
+        //      nepotrebno vracati prazan model/dto, posebno ne zbog SuccessMessage-a
+        // 4. newUser.Latitude = user.Latitude == null ? null : user.Latitude;
+        //      nepotrebno linija, nista ne radi. ucitati neku default vrijednost za geografsku duzinu npr. 45.0000 ili null 
+        // 5. Pogresna inicijalizacija User objekta, inicijalizovati na osnovu nekog od UserDto(s) (ovdje UserModel-User mapiranje) 
+        // 6. Poruka SuccessMessage je dio validacije (vezano s 2.)
         [HttpPost]
         public ActionResult Register(UserModel user)
         {
@@ -52,12 +64,22 @@ namespace FoodDelivery.Controllers
         }
 
 
-
+        //TODO: 
+        // Nepotreban endpoint, slicno kao za Register()
         public ActionResult Login()
         {
             UserLoginModel user = new UserLoginModel();
             return View(user);
         }
+
+        //TODO:  
+        // 1. Login se radi sa Claims i ClaimsPrincipal tokenom tj. autorizovani user je u memoriji, tako da je ovo skroz nevalidno,
+        //    ali kad bi bilo validno opet bi trebalo izvjeci autorizaciju u kontroleru, vec je odraditi u middleware-u 
+        // 2. Slicna prica kao za Register(UserModel user) metodu za validaciju 
+        // 3. Koriscenje sesije za cuvanje bilo kakvih info je big no-no, ima vise negativnih strana - opterecuje se server,
+        //    cuva se state sto nije pozeljno kad se rade RestAPI + mikroservisi, nije sigurno ni po pitanju security-ja,
+        //    a ono sto je glavno - nije vise praksa, jer postoje druge i sigurnije metode, pa se preslo na razvijanje i odrzavanje tih tool-ova i paketa
+        // 4. Ovoj liniji nije mjestu o kontroleru, vec u validatoru: ModelState.AddModelError("Error", "Invalid Username/Password.");
         [HttpPost]
         public ActionResult Login(UserLoginModel user)
         {

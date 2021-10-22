@@ -10,6 +10,8 @@ namespace FoodDelivery.Controllers
     //[Authorize(Roles = "Admin")]
     public class RestaurantController : Controller
     {
+        //TODO:
+        // AccountController i FoodContgroller komentari ovo vec pokrivaju
         FoodDeliveryDBEntities _dbEntities = new FoodDeliveryDBEntities();
         // GET: Restaurant
         public ActionResult List()
